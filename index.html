@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker app</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <form onSubmit="saveToLocalStorage(event)">
+        <label>Choose Expense Amount</label>
+        <input type="number" name="expenses" id="expenseamt" required>
+        <label> Choose Description</label>
+        <input type="text" name="descptn" id="Dscrptn" required>
+        <label>Choose a Category</label>
+        <!-- <input type="text" name="category" id="categry"> -->
+        <select name="category" id="categry">
+            <option>Movie</option>
+            <option>fuel</option>
+            <option>Rent</option>
+            <option>Grocery</option>
+        </select>
+        <!-- <input type="button" placeholder="Add Expense">  -->
+        <button class="btn btn-primary">Add Expense</button>
+    </form>
+
+    <ul id="listOfExpenses"></ul>
+
+    <script>
+        function saveToLocalStorage(event){
+            event.preventDefault();
+            const expenseamount = event.target.expenses.value;
+            const description = event.target.descptn.value;
+            const Choosecategory = event.target.category.value;
+
+
+            const obj = {
+                expenseamount:expenseamount,
+                description:description,
+                Choosecategory:Choosecategory
+            }
+
+            localStorage.setItem(obj.description, JSON.stringify(obj));
+            showUserOnScreen(obj);
+        }
+
+        function showUserOnScreen(obj){
+
+            const parentlist = document.getElementById('listOfExpenses');
+            const childli = document.createElement('li');
+
+            childli.textContent = obj.expenseamount + ' - ' + obj.description + ' - ' + obj.Choosecategory;
+
+            const deleteBtn = document.createElement('input');
+            deleteBtn.type = 'Button';
+            deleteBtn.value = 'DeleteExpense';
+            deleteBtn.className = 'btn btn-danger';
+
+            deleteBtn.onclick = () => {
+                localStorage.removeItem(obj.description);
+                parentlist.removeChild(childli);
+            }
+
+            const editBtn = document.createElement('input');
+            editBtn.type = 'Button';
+            editBtn.value = 'EditExpense';
+            editBtn.className = 'btn btn-primary';
+
+            editBtn.onclick = () => {
+                localStorage.removeItem(obj.description);
+                parentlist.removeChild(childli);
+
+                document.getElementById('expenseamt').value = obj.expenseamount;
+                document.getElementById('Dscrptn').value = obj.description;
+                document.getElementById('categry').value = obj.Choosecategory;
+            }
+
+            childli.appendChild(deleteBtn);
+            childli.appendChild(editBtn);
+            parentlist.appendChild(childli);
+
+        }
+    </script>
+</body>
+
+</html>
